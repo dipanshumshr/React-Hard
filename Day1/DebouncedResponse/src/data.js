@@ -1,0 +1,22 @@
+export const takenUsername =  [
+  'dip',
+  'admin',
+  'johnsmith',
+  'jane_doe',
+  'testuser',
+  'coolguy123',
+  'hello_world',
+  'user01',
+  'guest007',
+  'developer',
+  'reactmaster',
+  'frontendwizard',
+  'noobslayer',
+  'thechosenone',
+  'shubhie',
+  'matrix404',
+  'batman_returns',
+  'spideyfan',
+  'coder_dipanshu',
+  'lazygenius'
+];
