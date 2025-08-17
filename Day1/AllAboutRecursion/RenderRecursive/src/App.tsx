@@ -1,37 +1,103 @@
+import { useState } from 'react'
 import './App.css'
 import Category from './Category'
-import { useState } from 'react';
+
 
 type category = {
-  id : number,
-  name : string,
-  children ?: category[]
+  id: number,
+  name: string,
+  checked: boolean
+  children?: category[]
 }
 
 function App() {
-  
-  const [isOpen , setIsOpen] = useState(false)
 
-  const categories : category[]  = [
-  { id: 1, name: "Electronics", children: [
-    { id: 2, name: "Mobiles" },
-    { id: 3, name: "Laptops", children: [
-      { id: 4, name: "Gaming Laptops" }
-    ]}
-  ]}
-];
+  const [categories, setCategories] = useState<category[]>([
+    {
+      id: 1,
+      name: "Electronics",
+      checked: false,
+      children: [
+        { id: 2, name: "Mobiles", checked: false },
+        {
+          id: 3,
+          name: "Laptops",
+          checked: false,
+          children: [
+            { id: 4, name: "Gaming Laptops", checked: false }
+          ]
+        }
+      ]
+    }
+  ])
 
-function handleIsOpen()
-{
-  setIsOpen(prev => !prev)
-}
+  let depth = 0
+
+  function handleChange(id: number, isChecked: boolean) {
+    const updateParents = toggleChildren(id, categories, isChecked)
+
+    const updateChild = toggleParent(updateParents)
+
+    setCategories(updateChild)
+  }
+
+ function toggleChildren(id : number , categories : category[] , isChecked : boolean) : category[]
+ {
+    const updatedChildren = categories.map(child => {
+      if(child.id === id)
+      {
+        const updateAllChildren = (children : category[] | undefined) : category[] | undefined =>
+        {
+          return children?.map(child => ({
+            ...child,
+            checked : isChecked,
+            children : updateAllChildren(child.children)
+          }))
+        }
+
+        return {
+          ...child,
+          checked : isChecked,
+          children : updateAllChildren(child.children)
+        }
+      }
+      if(child.children)
+      {
+        return {
+          ...child,
+          children : toggleChildren( id , child.children , isChecked)
+        }
+      }
+
+      return child
+    })
+    return updatedChildren
+ }
+
+  function toggleParent(categories: category[]): category[] {
+    return categories.map(child => {
+      if(!child.children || child.children.length === 0)
+      {
+        return child
+      }
+
+      const updatedParents = toggleParent(child.children)
+      const allCheckedChildren = updatedParents.every(child => child.checked)
+
+      return {
+        ...child,
+        checked : allCheckedChildren,
+        children : updatedParents
+      }
+    })
+  }
 
   return (
     <>
       <h3>All the categories</h3>
       <ul>
         {categories.map(category => (
-          <Category key={category.id} categories = {category} open = {isOpen} onOpen = {handleIsOpen}/>
+          <Category key={category.id} categories={category} depth={depth + 1} onChecked={handleChange} />
         ))}
       </ul>
     </>
