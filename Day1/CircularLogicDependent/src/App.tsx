@@ -36,7 +36,7 @@ function App() {
   })
 
 
-  function handleChange(name : keyof ToggleKey , isChecked : boolean )
+  function handleChange(name : ToggleKey , isChecked : boolean )
   {
     setKeyToggles(prevKeyToggles => {
       let newObj = {...prevKeyToggles}
@@ -73,7 +73,7 @@ function App() {
         <div>
           {
           Object.keys(keyToggles).map(key => {
-            const checkBoxKey = key as keyof ToggleKey;
+            const checkBoxKey = key as ToggleKey;
 
             return (
               <CheckBox 
