@@ -1,33 +1,43 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Intro from "./Components/Intro"
+import Hobbies from "./Components/Hobbies"
+import Tourer from "./Components/Tourer"
+
+
+type checklist = {
+   introDiv : boolean,
+    hobbyDiv : boolean,
+    tourerDiv : boolean
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [checkListUI, setCheckListUI] = useState<checklist>({
+    introDiv : false,
+    hobbyDiv : false,
+    tourerDiv : false
+  })
+
+  function handleChecked(e : React.ChangeEvent<HTMLInputElement>)
+  {
+    const {name , checked} = e.target
+
+    setCheckListUI(prev => ({
+      ...prev,
+      [name] : checked
+    }))
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      {
+        Object.entries(checkListUI).map(([key, value])=> (
+          <input type= "checkbox" key={key} name={key} checked = {value} onChange={handleChecked}/>
+        ))
+      }
+      <Intro isPresent = {checkListUI.introDiv}/>
+      <Hobbies isPresent = {checkListUI.hobbyDiv}/>
+      <Tourer isPresent = {checkListUI.tourerDiv}/>
     </>
   )
 }
